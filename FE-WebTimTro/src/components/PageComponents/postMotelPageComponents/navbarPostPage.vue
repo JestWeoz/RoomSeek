@@ -146,7 +146,7 @@ export default {
       this.$router.push("/search");
     },
     toPostPage() {
-      window.location.reload();
+      this.$router.push("/account/dang-tin");
     },
     async getUserInfo() {
       const token = localStorage.getItem("token");

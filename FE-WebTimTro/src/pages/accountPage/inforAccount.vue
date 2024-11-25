@@ -14,7 +14,11 @@
       <div class="widget" style="background-color: #ecececc4">
         <ul class="list-group">
           <li class="list-group-item active">Thông tin Tài Khoản</li>
-          <li class="list-group-item" style="cursor: pointer">
+          <li
+            class="list-group-item"
+            style="cursor: pointer"
+            @click="toManageMotelPage"
+          >
             Quản lý trọ đã đăng
           </li>
           <li
@@ -67,57 +71,55 @@
   </div>
 </template>
 <script>
-import { ref } from "vue";
 import navbarInforAccount from "@/components/PageComponents/accountPageComponents/navbarInforAccount.vue";
+import axios from "axios";
 export default {
   name: "InforAccount",
   components: {
     navbarInforAccount,
   },
-  setup() {
-    // Define reactive data properties
-    const name = ref("Tuấn Nguyễn Quốc");
-    const gender = ref("Nam");
-    const birthdate = ref("");
-    const phoneNumber = ref("0388112760");
-    const idNumber = ref("");
-    const address = ref("");
-
-    // Define the method to handle form submission
-    const updateInfo = () => {
-      // Here, you would handle form submission, like sending the data to an API
-      console.log("User Information:", {
-        name: name.value,
-        gender: gender.value,
-        birthdate: birthdate.value,
-        idNumber: idNumber.value,
-        address: address.value,
-      });
-      alert("Cập nhật thông tin thành công!");
-    };
-
+  mounted() {
+    this.getUserInfo();
+  },
+  data() {
     return {
-      name,
-      gender,
-      birthdate,
-      idNumber,
-      address,
-      updateInfo,
+      userInfo: [],
+      phoneNumber: null,
+      name: "",
     };
   },
+
   methods: {
+    toManageMotelPage() {
+      this.$router.push("/account/quan-ly-tro");
+    },
     toPostPage() {
       this.$router.push("/account/dang-tin");
     },
+    async getUserInfo() {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const response = await axios.get("http://localhost:8081/get-info", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          this.userInfo = response.data;
+          this.phoneNumber = this.phoneNumber;
+        } catch (error) {
+          console.error("Error fetching user info:", error);
+        }
+      }
+    },
+    async updateUserInfo() {
+      
+    }
+
   },
 };
 </script>
 <style scoped>
-.list-group-item.active {
-  background-color: #323ff5;
-  color: white;
-  font-weight: bold;
-}
 h3 {
   color: #57bee7;
   font-size: xx-large;

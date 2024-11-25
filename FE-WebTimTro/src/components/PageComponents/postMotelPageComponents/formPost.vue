@@ -170,7 +170,7 @@
 
     <!-- Phần thêm ảnh -->
     <div class="mb-3">
-      <uploadImage @update:files="handleUploadedFiles" />
+      <uploadImage files="handleUploadedFiles" />
     </div>
 
     <!-- Các nút đồng ý và huỷ -->
@@ -181,6 +181,23 @@
       <button type="button" class="btn btn-secondary" @click="resetForm">
         Huỷ
       </button>
+    </div>
+    <!-- Vòng xoay và thông báo thành công -->
+    <div v-if="loading || success" class="simple-modal-overlay">
+      <div class="simple-modal-box">
+        <div v-if="loading" class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Đang xử lý...</span>
+        </div>
+        <div v-if="success" class="text-success">
+          <!-- Thêm phần hình ảnh dấu tick -->
+          <img
+            src="/img/check-circle-fill.svg"
+            alt="Success"
+            class="success-icon"
+          />
+          <p class="success-text">Đăng tin thành công</p>
+        </div>
+      </div>
     </div>
   </fieldset>
 </template>
@@ -215,6 +232,8 @@ export default {
         detail: null,
       },
       uploadedImages: [],
+      loading: false, // Trạng thái chờ
+      success: false, // Trạng thái thành công
     };
   },
   created() {
@@ -286,6 +305,9 @@ export default {
       this.uploadedImages = [];
     },
     async submitForm() {
+      // Reset trạng thái
+      this.success = false;
+
       // Validation
       if (!this.validateForm()) {
         alert("Vui lòng điền đầy đủ thông tin!");
@@ -312,7 +334,7 @@ export default {
       const token = localStorage.getItem("token");
 
       try {
-        console.log(formData);
+        this.loading = true; // Hiển thị vòng xoay
         const response = await axios.post(
           "http://localhost:8081/create",
           formData,
@@ -323,15 +345,17 @@ export default {
             },
           }
         );
-        alert("Tạo mới thành công!");
+        this.success = true; // Hiển thị dấu tích thành công
         this.resetForm();
       } catch (error) {
         console.error("Error:", error);
         alert(error.response?.data?.message || "Đã xảy ra lỗi khi tạo mới!");
+      } finally {
+        this.loading = false; // Ẩn vòng xoay
+        setTimeout(() => (this.success = false), 3000); // Ẩn dấu tích sau 3s
       }
     },
     validateForm() {
-      // Check if all required fields are filled
       const requiredFields = Object.values(this.formData);
       const locationFields = Object.values(this.selectedLocations);
 
@@ -352,5 +376,46 @@ export default {
 }
 .legend {
   font-weight: bold;
+}
+.simple-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Nền mờ */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+}
+
+.simple-modal-box {
+  width: 200px; /* Hình vuông */
+  height: 200px;
+  background: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+.success-text {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: green;
+  margin: 0;
+}
+.success-icon {
+  width: 50px; /* Điều chỉnh kích thước biểu tượng dấu tick */
+  height: 50px;
+  margin-bottom: 10px; /* Khoảng cách giữa hình ảnh và văn bản */
 }
 </style>

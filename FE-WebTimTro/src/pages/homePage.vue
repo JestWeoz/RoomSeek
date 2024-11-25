@@ -64,9 +64,7 @@ export default {
     propertyHCM: propertyListingHCM,
   },
   data() {
-    return {
-      message: "vooc code toi it thoi cac bo F12 =)))",
-    };
+    return {};
   },
   mounted() {
     // Bạn có thể thêm các script cần thiết ở đây

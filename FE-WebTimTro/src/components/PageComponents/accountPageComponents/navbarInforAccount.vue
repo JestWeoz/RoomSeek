@@ -153,7 +153,7 @@ export default {
       this.$router.push("/account/thong-tin-tai-khoan");
     },
     toPostPage() {
-      this.$router.push("/postMotel");
+      window.location.reload();
     },
     async getUserInfo() {
       const token = localStorage.getItem("token");

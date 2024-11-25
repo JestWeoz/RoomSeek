@@ -8,6 +8,8 @@ import inforAccount from '@/pages/accountPage/inforAccount.vue';
 import MotelDetailPage from '@/pages/motelDetailPage.vue';
 import postMotelPage from '@/pages/accountPage/postMotelPage.vue';
 
+import ManageMotel from '@/pages/accountPage/manageMotel.vue';
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -18,6 +20,7 @@ const router = createRouter({
     { path: "/postMotel", name: "PostMotelPage", component: PostMotelPage },
     { path: "/account/thong-tin-tai-khoan", name: "UserProfile", component: inforAccount },
     { path: "/account/dang-tin", name: "PostPage", component: postMotelPage },
+    { path: "/account/quan-ly-tro", name: "ManageMotel", component: ManageMotel },
     {
       path: '/motel/:slug-:id',
       name: 'motelDetail',

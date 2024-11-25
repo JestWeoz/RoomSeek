@@ -1,6 +1,7 @@
 package com.example.WebTimTroBA.Service.Implement;
 
 import com.example.WebTimTroBA.Converter.UserResponseConverter;
+import com.example.WebTimTroBA.Model.DTO.ChangePasswordDTO;
 import com.example.WebTimTroBA.Model.DTO.UserDTO;
 import com.example.WebTimTroBA.Model.Entity.RoleEntity;
 import com.example.WebTimTroBA.Model.Entity.UserEntity;
@@ -112,5 +113,21 @@ public class UserServiceImpl implements UserService {
         Integer id = jwtTokenUtils.extractUserId(token);
         UserEntity userEntity = userRepository.findById(id).get();
         return userResponseConverter.toUserResponse(userEntity);
+    }
+
+    @Override
+    public void changePassword(Integer id, ChangePasswordDTO changePasswordDTO) {
+        UserEntity userEntity = userRepository.findById(id).get();
+        if(passwordEncoder.matches(changePasswordDTO.getOldPassword(), userEntity.getPassword())) {
+            if (!changePasswordDTO.getNewPassword().equals(changePasswordDTO.getConfirmPassword())) {
+                throw new DataIntegrityViolationException("mật khẩu nhập lại không chính xác");
+            }
+            else {
+                userEntity.setPassWord(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+                userRepository.save(userEntity);
+            }
+        } else {
+            throw new DataIntegrityViolationException("Mật khẩu không chính xác");
+        }
     }
 }

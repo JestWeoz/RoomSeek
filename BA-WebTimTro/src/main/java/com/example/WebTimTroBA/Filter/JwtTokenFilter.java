@@ -35,6 +35,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         WHITE_LIST.add("/users/login");
         WHITE_LIST.add("/dashboard");
         WHITE_LIST.add("/motel/{id}");
+        WHITE_LIST.add("/delete/**");
     }
 
     @Override

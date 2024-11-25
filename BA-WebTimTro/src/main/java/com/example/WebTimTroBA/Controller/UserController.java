@@ -3,9 +3,11 @@ package com.example.WebTimTroBA.Controller;
 
 import com.example.WebTimTroBA.Converter.SearchConverter;
 import com.example.WebTimTroBA.CustomException.NotNullException;
+import com.example.WebTimTroBA.Model.DTO.ChangePasswordDTO;
 import com.example.WebTimTroBA.Model.DTO.MotelDTO;
 import com.example.WebTimTroBA.Model.DTO.UserDTO;
 import com.example.WebTimTroBA.Model.DTO.UserLoginDTO;
+import com.example.WebTimTroBA.Model.Entity.UserEntity;
 import com.example.WebTimTroBA.Model.Response.MotelResponse;
 import com.example.WebTimTroBA.Model.Search.MotelSearchBuilder;
 import com.example.WebTimTroBA.Service.MotelService;
@@ -84,23 +86,43 @@ public class UserController {
                 return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping("{userName}/added-buildings")
-    @PreAuthorize("#userName == authentication.name")
-    public ResponseEntity<?> searchByUserId(@PathVariable("userName") String userName, @RequestHeader("authorization") String token) {
-        if(userName == null) throw new NotNullException("User not exist");
-        if(jwtTokenUtils.isTokenUserNameValid(token.substring(7), userName)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
-        try{
-            return ResponseEntity.ok().body(motelService.findByUserName(userName));
-        }
-        catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteMotel(@PathVariable("id") Integer id){
         motelService.deleteById(id);
         return ResponseEntity.ok().body("Success");
+    }
+    @PostMapping("/changePassword")
+    public ResponseEntity<?> changePassword (@RequestBody ChangePasswordDTO changePasswordDTO, @RequestHeader("Authorization") String authorization) {
+        Integer id = jwtTokenUtils.extractUserId(authorization.replace("Bearer ", ""));
+        try{
+            userService.changePassword(id, changePasswordDTO);
+            return ResponseEntity.ok().body("Success");
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PostMapping("/editMotel")
+    public ResponseEntity<?> editMotel( MotelDTO motelDTO, @RequestHeader("Authorization") String authorization) {
+        Integer id = jwtTokenUtils.extractUserId(authorization.replace("Bearer ", ""));
+        try{
+            motelService.editById(id, motelDTO);
+            return ResponseEntity.ok().body("Success");
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("account/motels")
+    public ResponseEntity<?> getUserMotel(String token, @RequestHeader("Authorization") String authorization) {
+        Integer id = jwtTokenUtils.extractUserId(authorization.replace("Bearer ", ""));
+        try {
+            List<MotelResponse> motelResponses = motelService.getMotelsByUserId(id);
+            return ResponseEntity.ok().body(motelResponses);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 }

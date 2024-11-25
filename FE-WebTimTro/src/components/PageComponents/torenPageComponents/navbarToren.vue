@@ -153,7 +153,7 @@ export default {
       this.$router.push("/account/thong-tin-tai-khoan");
     },
     toPostPage() {
-      this.$router.push("/postMotel");
+      this.$router.push("/account/dang-tin");
     },
     async getUserInfo() {
       const token = localStorage.getItem("token");

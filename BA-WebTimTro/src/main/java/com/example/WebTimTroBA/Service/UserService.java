@@ -1,5 +1,6 @@
 package com.example.WebTimTroBA.Service;
 
+import com.example.WebTimTroBA.Model.DTO.ChangePasswordDTO;
 import com.example.WebTimTroBA.Model.DTO.UserDTO;
 import com.example.WebTimTroBA.Model.Entity.UserEntity;
 import com.example.WebTimTroBA.Model.Response.MotelResponse;
@@ -17,4 +18,5 @@ public interface UserService {
     Optional<UserEntity> findById(Integer id);
     MotelResponse findMotelById(Integer id);
     UserResponse getUserDetail(String token);
+    void changePassword(Integer id, ChangePasswordDTO changePasswordDTO);
 }

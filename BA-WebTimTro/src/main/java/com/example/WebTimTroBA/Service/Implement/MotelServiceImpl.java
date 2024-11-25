@@ -25,9 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -111,5 +109,28 @@ public class MotelServiceImpl implements MotelService {
     @Override
     public MotelResponse getById(Integer Id) {
         return motelResponseConverter.toMotelResponse(motelRepository.findById(Id).get());
+    }
+
+    @Override
+    public void editById(Integer Id, MotelDTO motelDTO) {
+        if (Objects.equals(Id, motelDTO.getUserId())) {
+            MotelEntity motelEntity = motelRepository.findById(motelDTO.getId()).get();
+            modelMapper.map(motelDTO, motelEntity);
+
+            motelRepository.save(motelEntity);
+        } else {
+            throw new NotFoundException("Ban khong co quyen");
+        }
+    }
+
+    @Override
+    public List<MotelResponse> getMotelsByUserId(Integer Id) {
+        Optional<List<MotelEntity>> motelEntities = motelRepository.findByUserId(Id);
+        List<MotelResponse> result = new ArrayList<>();
+        for(MotelEntity motelEntity : motelEntities.get()){
+            result.add(motelResponseConverter.toMotelResponse(motelEntity));
+        }
+
+        return result;
     }
 }

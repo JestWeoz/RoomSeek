@@ -20,7 +20,13 @@
           >
             Thông tin Tài Khoản
           </li>
-          <li class="list-group-item">Quản lý trọ đã đăng</li>
+          <li
+            class="list-group-item"
+            style="cursor: pointer"
+            @click="toManageMotelPage"
+          >
+            Quản lý trọ đã đăng
+          </li>
           <li class="list-group-item active" style="cursor: pointer">
             Đăng Tin
           </li>
@@ -49,6 +55,9 @@ export default {
     formPost,
   },
   methods: {
+    toManageMotelPage() {
+      this.$router.push("/account/quan-ly-tro");
+    },
     toInforAccount() {
       this.$router.push("/account/thong-tin-tai-khoan");
     },
@@ -56,12 +65,6 @@ export default {
 };
 </script>
 <style scoped>
-.list-group-item.active {
-  background-color: #323ff5;
-  color: white;
-  font-weight: bold;
-}
-
 h3 {
   color: #57bee7;
   font-size: xx-large;

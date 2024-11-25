@@ -15,18 +15,14 @@
         @change="handleFileSelect"
         class="file-input"
       />
-      <div
-        class="upload-content"
-        @click="triggerFileInput"
-        style="cursor: pointer"
-      >
-        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+      <div class="upload-content">
+        <img src="/img/cloudUpload.svg" alt="Upload Icon" class="upload-icon" />
         <p class="upload-text">Kéo thả hình ảnh vào đây</p>
         <p class="upload-text-sub">hoặc</p>
         <button class="upload-button" @click="triggerFileInput">
           Chọn hình ảnh
         </button>
-        <p class="file-limit">Tối đa 5 hình ảnh (*.jpg, *.png)</p>
+        <p class="file-limit">Tối đa 10 hình ảnh (*.jpg, *.png)</p>
       </div>
 
       <!-- Preview Images -->
@@ -69,7 +65,7 @@ export default {
     },
     processFiles(files) {
       // Giới hạn tối đa 5 file
-      const remainingSlots = 5 - this.previewImages.length;
+      const remainingSlots = 10 - this.previewImages.length;
       const filesToProcess = Array.from(files).slice(0, remainingSlots);
 
       filesToProcess.forEach((file) => {
