@@ -7,7 +7,7 @@ import PostMotelPage from '@/pages/postMotelPage.vue';
 import inforAccount from '@/pages/accountPage/inforAccount.vue';
 import MotelDetailPage from '@/pages/motelDetailPage.vue';
 import postMotelPage from '@/pages/accountPage/postMotelPage.vue';
-
+import editMotel from '@/pages/accountPage/editMotel.vue';
 import ManageMotel from '@/pages/accountPage/manageMotel.vue';
 
 const router = createRouter({
@@ -21,6 +21,7 @@ const router = createRouter({
     { path: "/account/thong-tin-tai-khoan", name: "UserProfile", component: inforAccount },
     { path: "/account/dang-tin", name: "PostPage", component: postMotelPage },
     { path: "/account/quan-ly-tro", name: "ManageMotel", component: ManageMotel },
+    { path: "/account/edit-motel/:id", name: "EditPage", component: editMotel },
     {
       path: '/motel/:slug-:id',
       name: 'motelDetail',

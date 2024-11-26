@@ -50,6 +50,9 @@ public class MotelEntity extends AbstractEntity{
     @Column(name = "userid")
     private Integer userId;
 
+    @Column(name = "type")
+    private String type;
+
     @Column(name = "maxpeople")
     private Integer maxPeople;
 

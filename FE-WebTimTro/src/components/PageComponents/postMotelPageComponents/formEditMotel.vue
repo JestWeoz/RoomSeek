@@ -1,6 +1,6 @@
 <template>
   <fieldset class="border p-3">
-    <legend class="w-auto px-2">Nhập thông tin nhà của bạn</legend>
+    <legend class="w-auto px-2">Thông tin trọ của bạn</legend>
 
     <!-- Tên toà nhà -->
     <div class="form-floating mb-3">
@@ -201,8 +201,8 @@
     </div>
   </fieldset>
 </template>
-
-<script>
+  
+  <script>
 import axios from "axios";
 import uploadImage from "./uploadImage.vue";
 
@@ -231,13 +231,17 @@ export default {
         maxPeople: null,
         detail: null,
       },
+      district: "",
+      province: "",
       uploadedImages: [],
       loading: false, // Trạng thái chờ
       success: false, // Trạng thái thành công
     };
   },
   created() {
-    this.fetchProvinces();
+    const motelId = 1;
+    this.fetchCities();
+    this.fetchMotelById(motelId);
   },
   methods: {
     handleUploadedFiles(files) {
@@ -253,21 +257,43 @@ export default {
         console.error("Error fetching provinces:", error);
       }
     },
-    async onProvinceChange() {
-      this.selectedLocations.district = "";
-      this.selectedLocations.ward = "";
-      this.districts = [];
-      this.wards = [];
+    async fetchCities() {
+      try {
+        const response = await axios.get(
+          "https://provinces.open-api.vn/api/?depth=1"
+        );
+        this.provinces = response.data;
 
-      if (this.selectedLocations.province) {
-        try {
-          const response = await axios.get(
-            `https://provinces.open-api.vn/api/p/${this.selectedLocations.province.code}?depth=2`
-          );
-          this.districts = response.data.districts;
-        } catch (error) {
-          console.error("Error fetching districts:", error);
+        if (this.selectedLocations.province) {
+          await this.onProvinceChange();
         }
+      } catch (error) {
+        console.error("Error fetching cities:", error);
+      }
+    },
+    async onProvinceChange() {
+      if (!this.selectedLocations.province) {
+        this.districts = [];
+        this.selectedLocations.district = "";
+        return;
+      }
+
+      let code;
+      for (let item of this.provinces) {
+        if (item.name == this.selectedLocations.province) {
+          code = item.code;
+          break;
+        }
+      }
+
+      try {
+        const response = await axios.get(
+          `https://provinces.open-api.vn/api/p/${code}?depth=2`
+        );
+        this.districts = response.data.districts;
+      } catch (error) {
+        console.error("Error fetching districts:", error);
+        this.districts = [];
       }
     },
     async onDistrictChange() {
@@ -365,11 +391,52 @@ export default {
         this.uploadedImages.length > 0
       );
     },
+    async fetchMotelById(id) {
+      try {
+        const token = localStorage.getItem("token"); // Lấy token nếu có
+        const response = await axios.get(`http://localhost:8081/motel/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const motelData = response.data;
+        console.log(motelData);
+        // Gán dữ liệu vào formData và selectedLocations
+        this.formData = {
+          title: motelData.title || "",
+          type: motelData.type || "",
+          houseNumber: motelData.houseNumber || "",
+          street: motelData.street || "",
+          area: motelData.area || "",
+          price: motelData.price || "",
+          interior: motelData.interior || "",
+          maxPeople: motelData.maxPeople || "",
+          detail: motelData.detail || "",
+        };
+
+        this.selectedLocations = {
+          province: { name: motelData.province } || "",
+          district: { name: motelData.district } || "",
+          ward: { name: motelData.ward } || "",
+        };
+
+        // Nếu có các tỉnh/quận/phường cần tải thêm thông tin
+        await this.onProvinceChange();
+        await this.onDistrictChange();
+
+        // Nếu có ảnh, bạn cần xử lý ảnh upload nếu muốn hiển thị
+        this.uploadedImages = motelData.images || [];
+      } catch (error) {
+        console.error("Error fetching motel data:", error);
+        alert("Không thể tải thông tin của trọ!");
+      }
+    },
   },
 };
 </script>
-
-<style scoped>
+  
+  <style scoped>
 .border {
   border: 5px solid #ced4da;
   border-radius: 5px;

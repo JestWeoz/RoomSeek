@@ -64,7 +64,6 @@ export default {
       this.processFiles(files);
     },
     processFiles(files) {
-      // Giới hạn tối đa 5 file
       const remainingSlots = 10 - this.previewImages.length;
       const filesToProcess = Array.from(files).slice(0, remainingSlots);
 

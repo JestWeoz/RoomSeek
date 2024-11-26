@@ -44,6 +44,8 @@ public class MotelResponse implements Comparable<MotelResponse>{
 
     private LocalDate createAt;
 
+    private Integer maxPeople;
+
     private String status;
 
     List<FileDTO> filesDTO;

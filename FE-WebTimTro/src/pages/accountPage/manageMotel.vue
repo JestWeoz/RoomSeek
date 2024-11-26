@@ -144,6 +144,9 @@ export default {
         }
       }
     },
+    editmotel(id) {
+      this.$router.push(`/account/edit-motel/${id}`);
+    },
   },
 };
 </script>
