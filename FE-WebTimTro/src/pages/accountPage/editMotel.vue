@@ -44,7 +44,7 @@
   </div>
 </template>
 <script>
-import formEditMotel from "@/components/PageComponents/postMotelPageComponents/formEditMotel.vue";
+import formEditMotel from "@/components/PageComponents/editPageComponents/formEditMotel.vue";
 import navbarInforAccount from "@/components/PageComponents/accountPageComponents/navbarInforAccount.vue";
 export default {
   name: "EditPage",

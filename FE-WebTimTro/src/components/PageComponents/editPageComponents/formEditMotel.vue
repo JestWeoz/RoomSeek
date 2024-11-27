@@ -34,15 +34,15 @@
         <div class="col-6 col-sm-3">
           <select
             class="form-select mb-3"
-            v-model="selectedLocations.province"
-            @change="onProvinceChange"
+            v-model="selectedLocations.province.name"
+            @change="onProvinceChange(selectedLocations.province.name)"
             required
           >
             <option value="" selected disabled>Chọn tỉnh thành</option>
             <option
               v-for="province in provinces"
               :key="province.code"
-              :value="province"
+              :value="province.name"
             >
               {{ province.name }}
             </option>
@@ -51,8 +51,8 @@
         <div class="col-6 col-sm-3">
           <select
             class="form-select mb-3"
-            v-model="selectedLocations.district"
-            @change="onDistrictChange"
+            v-model="selectedLocations.district.name"
+            @change="onDistrictChange(selectedLocations.district.name)"
             :disabled="!districts.length"
             required
           >
@@ -60,7 +60,7 @@
             <option
               v-for="district in districts"
               :key="district.code"
-              :value="district"
+              :value="district.name"
             >
               {{ district.name }}
             </option>
@@ -69,12 +69,12 @@
         <div class="col-6 col-sm-3">
           <select
             class="form-select mb-3"
-            v-model="selectedLocations.ward"
+            v-model="selectedLocations.ward.name"
             :disabled="!wards.length"
             required
           >
             <option value="" disabled selected>Chọn phường xã</option>
-            <option v-for="ward in wards" :key="ward.code" :value="ward">
+            <option v-for="ward in wards" :key="ward.code" :value="ward.name">
               {{ ward.name }}
             </option>
           </select>
@@ -167,10 +167,37 @@
       />
       <label for="maxPeople">Số người tối đa</label>
     </div>
+    <!-- phần ảnh cũ -->
+    <div class="mb-3 row">
+      <label for="uploadFile" class="col-3 col-form-label"
+        >Hình ảnh đã lưu</label
+      >
+      <div class="col-12">
+        <!-- Preview container -->
+        <div class="mt-3 d-flex flex-wrap gap-3">
+          <div
+            v-for="(preview, index) in Images"
+            :key="index"
+            class="position-relative preview-container"
+            style="width: 150px"
+          >
+            <img
+              :src="preview.fileUrl"
+              :alt="'Preview ' + (index + 1)"
+              class="img-fluid rounded"
+              style="height: 150px; object-fit: cover; width: 100%"
+            />
+            <button class="remove-button" @click="handleDeleteImg(preview.id)">
+              ×
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Phần thêm ảnh -->
     <div class="mb-3">
-      <uploadImage @update:files="handleUploadedFiles" />
+      <uploadImageEdit @update:files="handleUploadedFiles" />
     </div>
 
     <!-- Các nút đồng ý và huỷ -->
@@ -195,7 +222,7 @@
             alt="Success"
             class="success-icon"
           />
-          <p class="success-text">Đăng tin thành công</p>
+          
         </div>
       </div>
     </div>
@@ -204,11 +231,16 @@
   
   <script>
 import axios from "axios";
-import uploadImage from "./uploadImage.vue";
+
+import uploadImageEdit from "./uploadImageEdit.vue";
 
 export default {
   components: {
-    uploadImage,
+    uploadImageEdit,
+  },
+  created() {
+    const motelId = this.$route.params.id;
+    this.fetchMotelById(motelId);
   },
   data() {
     return {
@@ -221,6 +253,8 @@ export default {
         ward: "",
       },
       formData: {
+        id: null,
+        userId: null,
         title: null,
         type: null,
         houseNumber: null,
@@ -233,59 +267,27 @@ export default {
       },
       district: "",
       province: "",
+      listIdDelete: [],
       uploadedImages: [],
+      Images: [],
       loading: false, // Trạng thái chờ
       success: false, // Trạng thái thành công
     };
   },
-  created() {
-    const motelId = 1;
-    this.fetchCities();
-    this.fetchMotelById(motelId);
-  },
+
   methods: {
     handleUploadedFiles(files) {
       this.uploadedImages = files;
     },
-    async fetchProvinces() {
-      try {
-        const response = await axios.get(
-          "https://provinces.open-api.vn/api/?depth=1"
-        );
-        this.provinces = response.data;
-      } catch (error) {
-        console.error("Error fetching provinces:", error);
-      }
-    },
-    async fetchCities() {
-      try {
-        const response = await axios.get(
-          "https://provinces.open-api.vn/api/?depth=1"
-        );
-        this.provinces = response.data;
 
-        if (this.selectedLocations.province) {
-          await this.onProvinceChange();
-        }
-      } catch (error) {
-        console.error("Error fetching cities:", error);
-      }
-    },
-    async onProvinceChange() {
-      if (!this.selectedLocations.province) {
-        this.districts = [];
-        this.selectedLocations.district = "";
-        return;
-      }
-
+    async onProvinceChange(province) {
       let code;
       for (let item of this.provinces) {
-        if (item.name == this.selectedLocations.province) {
+        if (item.name == province) {
           code = item.code;
           break;
         }
       }
-
       try {
         const response = await axios.get(
           `https://provinces.open-api.vn/api/p/${code}?depth=2`
@@ -296,101 +298,24 @@ export default {
         this.districts = [];
       }
     },
-    async onDistrictChange() {
-      this.selectedLocations.ward = "";
-      this.wards = [];
-
-      if (this.selectedLocations.district) {
-        try {
-          const response = await axios.get(
-            `https://provinces.open-api.vn/api/d/${this.selectedLocations.district.code}?depth=2`
-          );
-          this.wards = response.data.wards;
-        } catch (error) {
-          console.error("Error fetching wards:", error);
+    async onDistrictChange(ward) {
+      let code;
+      for (let item of this.districts) {
+        if (item.name == ward) {
+          code = item.code;
         }
       }
-    },
-    resetForm() {
-      this.formData = {
-        title: null,
-        type: null,
-        houseNumber: null,
-        street: null,
-        area: null,
-        price: null,
-        interior: null,
-        maxPeople: null,
-        detail: null,
-      };
-      this.selectedLocations = {
-        province: "",
-        district: "",
-        ward: "",
-      };
-      this.uploadedImages = [];
-    },
-    async submitForm() {
-      // Reset trạng thái
-      this.success = false;
-
-      // Validation
-      if (!this.validateForm()) {
-        alert("Vui lòng điền đầy đủ thông tin!");
-        return;
-      }
-
-      const formData = new FormData();
-
-      // Append location data
-      formData.append("province", this.selectedLocations.province.name);
-      formData.append("district", this.selectedLocations.district.name);
-      formData.append("ward", this.selectedLocations.ward.name);
-
-      // Append form data
-      Object.keys(this.formData).forEach((key) => {
-        formData.append(key, this.formData[key]);
-      });
-
-      // Append images
-      this.uploadedImages.forEach((file, index) => {
-        formData.append(`files[${index}]`, file);
-      });
-      console.log(formData);
-      const token = localStorage.getItem("token");
 
       try {
-        this.loading = true; // Hiển thị vòng xoay
-        const response = await axios.post(
-          "http://localhost:8081/create",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${token}`,
-            },
-          }
+        const response = await axios.get(
+          `https://provinces.open-api.vn/api/d/${code}?depth=2`
         );
-        this.success = true; // Hiển thị dấu tích thành công
-        this.resetForm();
+        this.wards = response.data.wards;
       } catch (error) {
-        console.error("Error:", error);
-        alert(error.response?.data?.message || "Đã xảy ra lỗi khi tạo mới!");
-      } finally {
-        this.loading = false; // Ẩn vòng xoay
-        setTimeout(() => (this.success = false), 3000); // Ẩn dấu tích sau 3s
+        console.error("Error fetching wards:", error);
       }
     },
-    validateForm() {
-      const requiredFields = Object.values(this.formData);
-      const locationFields = Object.values(this.selectedLocations);
 
-      return (
-        requiredFields.every((field) => field != null && field !== "") &&
-        locationFields.every((field) => field !== "") &&
-        this.uploadedImages.length > 0
-      );
-    },
     async fetchMotelById(id) {
       try {
         const token = localStorage.getItem("token"); // Lấy token nếu có
@@ -399,11 +324,22 @@ export default {
             Authorization: `Bearer ${token}`,
           },
         });
+        try {
+          const response = await axios.get(
+            "https://provinces.open-api.vn/api/?depth=1"
+          );
+          this.provinces = response.data;
+        } catch (error) {
+          console.error("Error fetching provinces:", error);
+        }
 
         const motelData = response.data;
         console.log(motelData);
         // Gán dữ liệu vào formData và selectedLocations
+
         this.formData = {
+          userId: motelData.owner.id || "",
+          id: motelData.id || "",
           title: motelData.title || "",
           type: motelData.type || "",
           houseNumber: motelData.houseNumber || "",
@@ -421,15 +357,74 @@ export default {
           ward: { name: motelData.ward } || "",
         };
 
-        // Nếu có các tỉnh/quận/phường cần tải thêm thông tin
-        await this.onProvinceChange();
-        await this.onDistrictChange();
-
         // Nếu có ảnh, bạn cần xử lý ảnh upload nếu muốn hiển thị
-        this.uploadedImages = motelData.images || [];
+        let code;
+        for (let item of this.provinces) {
+          if (item.name == motelData.province) {
+            code = item.code;
+            break;
+          }
+        }
+        try {
+          const response = await axios.get(
+            `https://provinces.open-api.vn/api/p/${code}?depth=2`
+          );
+          this.districts = response.data.districts;
+        } catch (error) {
+          console.error("Error fetching districts:", error);
+          this.districts = [];
+        }
+        this.Images = motelData.filesDTO || [];
+        this.onProvinceChange(motelData.province);
+        this.onDistrictChange(motelData.district);
       } catch (error) {
         console.error("Error fetching motel data:", error);
         alert("Không thể tải thông tin của trọ!");
+      }
+    },
+    async handleDeleteImg(fileId) {
+      this.listIdDelete.push(fileId);
+      this.Images = this.Images.filter((preview) => preview.id !== fileId);
+    },
+    async submitForm() {
+      // Reset trạng thái
+      this.success = false;
+
+      const formEdit = new FormData();
+
+      // Append location data
+      formEdit.append("province", this.selectedLocations.province.name);
+      formEdit.append("district", this.selectedLocations.district.name);
+      formEdit.append("ward", this.selectedLocations.ward.name);
+      formEdit.append("listIdDelete", this.listIdDelete);
+      // Append form data
+      Object.keys(this.formData).forEach((key) => {
+        formEdit.append(key, this.formData[key]);
+      });
+
+      // Append images
+      this.uploadedImages.forEach((file, index) => {
+        formEdit.append(`files[${index}]`, file);
+      });
+
+      const token = localStorage.getItem("token");
+
+      try {
+        this.loading = true; // Hiển thị vòng xoay
+        await axios.post("http://localhost:8081/editMotel", formEdit, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        this.success = true; // Hiển thị dấu tích thành công
+        // this.resetForm();
+      } catch (error) {
+        console.error("Error:", error);
+        alert(error.response?.data?.message || "Đã xảy ra lỗi khi sửa bài!");
+      } finally {
+        this.loading = false; // Ẩn vòng xoay
+        setTimeout(() => (this.success = false), 3000); // Ẩn dấu tích sau 3s
       }
     },
   },
@@ -473,7 +468,21 @@ export default {
   width: 3rem;
   height: 3rem;
 }
-
+.remove-button {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+  padding: 0;
+}
 .success-text {
   font-size: 1.2rem;
   font-weight: bold;

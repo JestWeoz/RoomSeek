@@ -9,6 +9,8 @@ import lombok.*;
 @RequiredArgsConstructor
 public class FileDTO {
 
+    private Integer id;
+
     private String name;
 
     private String fileUrl;

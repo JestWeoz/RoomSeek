@@ -38,6 +38,8 @@ public class MotelResponse implements Comparable<MotelResponse>{
 
     private String detail;
 
+    private String street;
+
     private OwnerResponse owner;
 
     private String address;

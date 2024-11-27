@@ -17,6 +17,6 @@ public interface MotelService {
     List<MotelResponse> findByUserName(String name) throws MalformedURLException;
     void deleteById(Integer Id);
     MotelResponse getById(Integer Id);
-    void editById(Integer Id, MotelDTO motelDTO);
+    void editById(Integer Id, MotelDTO motelDTO) throws IOException;
     List<MotelResponse>getMotelsByUserId (Integer Id);
 }

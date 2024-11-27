@@ -61,6 +61,7 @@ public class MotelResponseConverter {
         for(FileEntity fileEntity : fileEntities){
             FileDTO fileDTO = FileDTO
                     .builder()
+                    .id(fileEntity.getId())
                     .name(fileEntity.getName())
                     .fileId(fileEntity.getFileId())
                     .fileUrl(fileEntity.getFileUrl())

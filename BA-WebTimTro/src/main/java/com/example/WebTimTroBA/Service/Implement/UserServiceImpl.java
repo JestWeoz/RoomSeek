@@ -130,4 +130,13 @@ public class UserServiceImpl implements UserService {
             throw new DataIntegrityViolationException("Mật khẩu không chính xác");
         }
     }
+
+    @Override
+    public void editUserDetail(Integer id, UserDTO userDTO) {
+        UserEntity userEntity = userRepository.findById(id).get();
+        userEntity.setFullName(userDTO.getFullName());
+        userEntity.setEmail(userDTO.getEmail());
+        userEntity.setPhoneNumber(userDTO.getPhoneNumber());
+        userRepository.save(userEntity);
+    }
 }

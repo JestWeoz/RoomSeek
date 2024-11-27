@@ -10,6 +10,7 @@ import com.example.WebTimTroBA.Repository.MotelRepository;
 import com.example.WebTimTroBA.Model.Response.MotelResponse;
 import com.example.WebTimTroBA.Model.Search.MotelSearchBuilder;
 import com.example.WebTimTroBA.Service.CloudinaryService;
+import com.example.WebTimTroBA.Service.FileService;
 import com.example.WebTimTroBA.Service.MotelService;
 import com.example.WebTimTroBA.Service.UserService;
 import com.example.WebTimTroBA.Utils.JwtTokenUtils;
@@ -36,6 +37,7 @@ public class MotelServiceImpl implements MotelService {
     private final CloudinaryService cloudinaryService;
     private final UserService userService;
     private final JwtTokenUtils jwtTokenUtils;
+    private final FileService fileService;
 
     @Override
     public List<MotelResponse> findByParam(MotelSearchBuilder motelSearchBuilder) throws MalformedURLException {
@@ -52,6 +54,7 @@ public class MotelServiceImpl implements MotelService {
             throw new NotFoundException("Unauthorized");
         }
         MotelEntity motelEntity = modelMapper.map(motelDTO, MotelEntity.class);
+
         motelEntity.setUserId(id);
         motelEntity.setUser(userEntityOptional.get());
         motelRepository.save(motelEntity);
@@ -112,11 +115,34 @@ public class MotelServiceImpl implements MotelService {
     }
 
     @Override
-    public void editById(Integer Id, MotelDTO motelDTO) {
+    public void editById(Integer Id, MotelDTO motelDTO) throws IOException {
         if (Objects.equals(Id, motelDTO.getUserId())) {
             MotelEntity motelEntity = motelRepository.findById(motelDTO.getId()).get();
             modelMapper.map(motelDTO, motelEntity);
-
+            if(motelDTO.getListIdDelete() != null){
+                List<Integer> ListIdDelete = motelDTO.getListIdDelete();
+                for (Integer IdDelete : ListIdDelete) {
+                    FileEntity fileEntity = fileService.findById(IdDelete);
+                    fileEntity.setMotelEntity(null);
+                    motelEntity.getFileEntities().remove(fileEntity);
+                    fileService.delete(IdDelete);
+                }
+            }
+            List<MultipartFile> files = motelDTO.getFiles();
+            if(files != null){
+                for(MultipartFile file : files){
+                    Map result = cloudinaryService.uploadFile(file);
+                    FileEntity fileEntity = FileEntity
+                            .builder()
+                            .name(result.get("original_filename").toString())
+                            .fileUrl(result.get("url").toString())
+                            .fileId(result.get("public_id").toString())
+                            .motelId(motelEntity.getId())
+                            .motelEntity(motelEntity)
+                            .build();
+                    motelEntity.getFileEntities().add(fileEntity);
+                }
+            }
             motelRepository.save(motelEntity);
         } else {
             throw new NotFoundException("Ban khong co quyen");

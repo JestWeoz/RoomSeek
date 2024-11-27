@@ -30,8 +30,12 @@
           <li class="list-group-item active" style="cursor: pointer">
             Đăng Tin
           </li>
-          <li class="list-group-item" style="cursor: pointer">
-            Quản lý đánh giá trợ
+          <li
+            class="list-group-item"
+            style="cursor: pointer"
+            @click="toChangePasswordPage"
+          >
+            Đổi Mật Khẩu
           </li>
         </ul>
       </div>
@@ -55,6 +59,9 @@ export default {
     formPost,
   },
   methods: {
+    toChangePasswordPage() {
+      this.$router.push("/account/doi-mat-khau");
+    },
     toManageMotelPage() {
       this.$router.push("/account/quan-ly-tro");
     },

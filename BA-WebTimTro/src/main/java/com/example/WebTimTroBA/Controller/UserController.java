@@ -93,7 +93,7 @@ public class UserController {
         return ResponseEntity.ok().body("Success");
     }
     @PostMapping("/changePassword")
-    public ResponseEntity<?> changePassword (@RequestBody ChangePasswordDTO changePasswordDTO, @RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<?> changePassword (ChangePasswordDTO changePasswordDTO, @RequestHeader("Authorization") String authorization) {
         Integer id = jwtTokenUtils.extractUserId(authorization.replace("Bearer ", ""));
         try{
             userService.changePassword(id, changePasswordDTO);
@@ -108,6 +108,7 @@ public class UserController {
         Integer id = jwtTokenUtils.extractUserId(authorization.replace("Bearer ", ""));
         try{
             motelService.editById(id, motelDTO);
+
             return ResponseEntity.ok().body("Success");
         }
         catch (Exception e) {
@@ -120,6 +121,16 @@ public class UserController {
         try {
             List<MotelResponse> motelResponses = motelService.getMotelsByUserId(id);
             return ResponseEntity.ok().body(motelResponses);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PostMapping("account/user-info")
+    public ResponseEntity<?> editUserInfo(UserDTO userDTO, @RequestHeader("Authorization") String authorization) {
+        Integer id = jwtTokenUtils.extractUserId(authorization.replace("Bearer ", ""));
+        try {
+            userService.editUserDetail(id, userDTO);
+            return ResponseEntity.ok().body("Success");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

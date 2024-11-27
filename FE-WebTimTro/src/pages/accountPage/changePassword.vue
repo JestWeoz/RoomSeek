@@ -13,7 +13,13 @@
       <!-- Sidebar -->
       <div class="widget" style="background-color: #ecececc4">
         <ul class="list-group">
-          <li class="list-group-item active">Thông tin Tài Khoản</li>
+          <li
+            class="list-group-item"
+            style="cursor: pointer"
+            @click="toInfoPage"
+          >
+            Thông tin Tài Khoản
+          </li>
           <li
             class="list-group-item"
             style="cursor: pointer"
@@ -28,11 +34,7 @@
           >
             Đăng Tin
           </li>
-          <li
-            class="list-group-item"
-            style="cursor: pointer"
-            @click="toChangePasswordPage"
-          >
+          <li class="list-group-item active" style="cursor: pointer">
             Đổi mật khẩu
           </li>
         </ul>
@@ -42,35 +44,35 @@
     <div class="col-md-8">
       <!-- Main Content -->
       <div class="widget" style="background-color: #ecececc4">
-        <h3 class="mb-4">THÔNG TIN TÀI KHOẢN</h3>
+        <h3 class="mb-4">ĐỔI MẬT KHẨU</h3>
         <p>Cập nhật thông tin của bạn</p>
 
         <form @submit.prevent="updateInfo">
           <div class="mb-3">
-            <label class="form-label">Họ tên</label>
+            <label class="form-label">Mật khẩu cũ</label>
             <input
-              type="text"
-              v-model="userInfo.fullName"
+              type="password"
+              v-model="oldPassword"
               class="form-control"
-              placeholder="Nhập Tên"
+              placeholder="Nhập mật khẩu cũ"
             />
           </div>
           <div class="mb-3">
-            <label class="form-label">Số Điện Thoại</label>
+            <label class="form-label">Mật khẩu mới</label>
             <input
-              type="text"
-              v-model="userInfo.phoneNumber"
+              type="password"
+              v-model="newPassword"
               class="form-control"
-              placeholder="Nhập SĐT"
+              placeholder="Nhập mật khẩu mới"
             />
           </div>
           <div class="mb-3">
-            <label class="form-label">Email</label>
+            <label class="form-label">Nhập lại mật khẩu</label>
             <input
-              type="text"
-              v-model="userInfo.email"
+              type="password"
+              v-model="confirmPassword"
               class="form-control"
-              placeholder="Nhập Email"
+              placeholder="Nhập lại mật khẩu mới"
             />
           </div>
 
@@ -105,72 +107,85 @@
       </div>
     </div>
   </div>
+  <!-- Modal lỗi -->
+  <div
+    v-if="showErrorModal"
+    class="modal"
+    tabindex="-1"
+    style="display: block; background-color: rgba(0, 0, 0, 0.5)"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Thông báo lỗi</h5>
+          <button
+            type="button"
+            class="btn-close"
+            @click="closeErrorModal"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <p>{{ errorMessage }}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" @click="closeErrorModal">
+            Đóng
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
-<script>
+  <script>
 import navbarInforAccount from "@/components/PageComponents/accountPageComponents/navbarInforAccount.vue";
 import axios from "axios";
 export default {
-  name: "InforAccount",
+  name: "ChangePassword",
   components: {
     navbarInforAccount,
   },
-  created() {
-    this.getUserInfo();
-  },
   data() {
     return {
-      userInfo: [],
+      oldPassword: "",
+      newPassword: "",
+      confirmPassword: "",
       showModal: false,
+      showErrorModal: false,
+      errorMessage: "",
     };
   },
 
   methods: {
+    toInfoPage() {
+      this.$router.push("/account/thong-tin-tai-khoan");
+    },
     toManageMotelPage() {
       this.$router.push("/account/quan-ly-tro");
     },
     toPostPage() {
       this.$router.push("/account/dang-tin");
     },
-    toChangePasswordPage() {
-      this.$router.push("/account/doi-mat-khau");
-    },
-    async getUserInfo() {
+
+    async submitForm() {
+      const formData = new FormData();
+      formData.append("oldPassword", this.oldPassword);
+      formData.append("newPassword", this.newPassword);
+      formData.append("confirmPassword", this.confirmPassword);
       const token = localStorage.getItem("token");
       if (token) {
         try {
-          const response = await axios.get("http://localhost:8081/get-info", {
+          await axios.post("http://localhost:8081/changePassword", formData, {
             headers: {
+              "Content-Type": "multipart/form-data",
               Authorization: `Bearer ${token}`,
             },
           });
-          this.userInfo = response.data;
-        } catch (error) {
-          console.error("Error fetching user info:", error);
-        }
-      }
-    },
-    async updateUserInfo() {},
-    async submitForm() {
-      const formData = new FormData();
-      formData.append("fullName", this.userInfo.fullName);
-      formData.append("phoneNumber", this.userInfo.phoneNumber);
-      formData.append("email", this.userInfo.email);
-      const token = localStorage.getItem("token");
-      if (token) {
-        try {
-          await axios.post(
-            "http://localhost:8081/account/user-info",
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
           this.showModal = true;
         } catch (error) {
-          console.error("Error fetching user info:", error);
+          this.errorMessage =
+            error.response?.data?.message ||
+            "Mật khẩu cũ hoặc mật khẩu nhập lại của bạn không đúng hãy kiểm tra lại!!";
+          this.showErrorModal = true;
         }
       }
     },
@@ -178,10 +193,13 @@ export default {
       this.showModal = false; // Đóng modal
       window.location.reload();
     },
+    closeErrorModal() {
+      this.showErrorModal = false;
+    },
   },
 };
 </script>
-<style scoped>
+  <style scoped>
 h3 {
   color: #57bee7;
   font-size: xx-large;
@@ -201,3 +219,4 @@ h3 {
   max-width: 500px;
 }
 </style>
+  

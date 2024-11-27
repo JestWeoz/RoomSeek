@@ -303,6 +303,7 @@ export default {
         ward: "",
       };
       this.uploadedImages = [];
+      window.location.reload();
     },
     async submitForm() {
       // Reset trạng thái

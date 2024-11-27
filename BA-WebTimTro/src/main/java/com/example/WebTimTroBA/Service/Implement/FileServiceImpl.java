@@ -29,4 +29,14 @@ public class FileServiceImpl implements FileService {
     public List<FileEntity> findByMotelId(Integer id) {
         return fileRepository.findByMotelId(id);
     }
+
+    @Override
+    public FileEntity findById(Integer id) {
+        return fileRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void delete(Integer id) {
+        fileRepository.deleteById(id);
+    }
 }

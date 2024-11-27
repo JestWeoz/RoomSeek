@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -36,6 +37,8 @@ public class MotelDTO {
     private String detail;
 
     private Integer userId;
+
+    private List<Integer> listIdDelete;
 
     private List<MultipartFile> files;
 }

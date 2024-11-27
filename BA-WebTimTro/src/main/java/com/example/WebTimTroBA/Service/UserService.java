@@ -19,4 +19,5 @@ public interface UserService {
     MotelResponse findMotelById(Integer id);
     UserResponse getUserDetail(String token);
     void changePassword(Integer id, ChangePasswordDTO changePasswordDTO);
+    void editUserDetail(Integer id, UserDTO userDTO);
 }
