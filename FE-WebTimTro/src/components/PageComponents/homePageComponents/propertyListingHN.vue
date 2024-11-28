@@ -70,7 +70,7 @@ export default {
       try {
         const response = await axios.get("http://localhost:8081/search", {
           params: {
-            province: "Hà Nội", // Tỉnh thành cần lấy
+            province: "Hà Nội",
           },
         });
 

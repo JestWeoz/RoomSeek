@@ -84,6 +84,7 @@ public class MotelRepositoryCustomImpl implements MotelRepositoryCustom {
         queryNormal(sql, motelSearchBuilder);
         querySpecial(sql, motelSearchBuilder);
         keywordQuery(sql, motelSearchBuilder);
+        sql.append(" and m.status = 1");
         Query query = entityManager.createNativeQuery(sql.toString(), MotelEntity.class);
         return query.getResultList();
     }

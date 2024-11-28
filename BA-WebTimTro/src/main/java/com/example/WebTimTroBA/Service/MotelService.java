@@ -19,4 +19,6 @@ public interface MotelService {
     MotelResponse getById(Integer Id);
     void editById(Integer Id, MotelDTO motelDTO) throws IOException;
     List<MotelResponse>getMotelsByUserId (Integer Id);
+    List<MotelResponse>getMotelsByStatus(Integer status) throws MalformedURLException;
+    void setStatus(List<Integer> Id, Integer status) throws MalformedURLException;
 }

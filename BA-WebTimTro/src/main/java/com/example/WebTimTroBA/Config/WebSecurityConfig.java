@@ -35,13 +35,15 @@ public class WebSecurityConfig {
                                     "/users/login",
                                     "/dashboard",
                                     "/motel/{id}",
-                                    "/delete/**"
+                                    "/delete/**",
+                                    "/get-info",
+                                    "/changePassword",
+                                    "/unapproved-motels",
+                                    "/approved-motels"
+
                             ).permitAll()
                             .requestMatchers(GET, "/admin/**").hasRole("ADMIN")
-                            .requestMatchers(GET, "/get-info").hasRole("USER")
                             .requestMatchers(POST, "/account/**").hasRole("USER")
-                            .requestMatchers(POST, "/changePassword").hasRole("USER")
-                            .requestMatchers(POST, "/create").hasRole("USER")
                             .anyRequest().authenticated();
                 })
                 .authenticationProvider(authenticationProvider);

@@ -12,14 +12,12 @@
     <div class="col-md-2">
       <div class="widget" style="background-color: #ecececc4">
         <ul class="list-group">
+          <li class="list-group-item active">Tin đang chờ duyệt</li>
           <li
             class="list-group-item"
-            @click="toUnApprovedMotelPage"
             style="cursor: pointer"
+            @click="toApprovedMotelPage"
           >
-            Tin đang chờ duyệt
-          </li>
-          <li class="list-group-item active" style="cursor: pointer">
             Tin đã duyệt
           </li>
         </ul>
@@ -30,7 +28,7 @@
       <div class="widget" style="background-color: #ecececc4">
         <!-- Hàng chứa tiêu đề và checkbox "Chọn tất cả" -->
         <div class="d-flex justify-content-between align-items-center mb-4">
-          <h3 class="m-0">DANH SÁCH TIN ĐÃ DUYỆT</h3>
+          <h3 class="m-0">DANH SÁCH TIN ĐANG CHỜ DUYỆT</h3>
           <div class="form-check">
             <input
               type="checkbox"
@@ -74,19 +72,26 @@
             </p>
           </div>
         </div>
-        <button class="btn btn-success" @click="approveSelected">Gỡ Tin</button>
+        <button class="btn btn-success" @click="approveSelected">
+          Duyệt Tin
+        </button>
       </div>
     </div>
   </div>
 </template>
-    
-    <script>
+
+
+
+
+
+      
+      <script>
 import axios from "axios";
+
 import Navbar from "@/components/PageComponents/homePageComponents/navbar.vue";
 import { removeVietnameseTones } from "@/utils/removeVnTone";
-
 export default {
-  name: "ApprovePage",
+  name: "UnApprovePage",
   components: {
     Navbar,
   },
@@ -96,20 +101,13 @@ export default {
       showConfirm: false,
       selectAll: false,
       selectedMotels: [],
-      status: 0,
+      status: 1,
     };
   },
   mounted() {
     this.getMotels();
   },
   methods: {
-    toggleAllCheckboxes() {
-      if (this.selectAll) {
-        this.selectedMotels = this.motels.map((motel) => motel.id);
-      } else {
-        this.selectedMotels = [];
-      }
-    },
     toDetailsPage(id, title) {
       const newTitle = removeVietnameseTones(title);
       const slug = newTitle
@@ -118,15 +116,22 @@ export default {
         .replace(/[^\w-]+/g, "");
       this.$router.push(`/motel/${slug}-${id}`);
     },
-    toUnApprovedMotelPage() {
-      this.$router.push("/admin/duyet-bai-dang");
+    toggleAllCheckboxes() {
+      if (this.selectAll) {
+        this.selectedMotels = this.motels.map((motel) => motel.id);
+      } else {
+        this.selectedMotels = [];
+      }
+    },
+    toApprovedMotelPage() {
+      this.$router.push("/admin/bai-dang-da-duyet");
     },
     async getMotels() {
       const token = localStorage.getItem("token");
       if (token) {
         try {
           const response = await axios.get(
-            "http://localhost:8081/approved-motels",
+            "http://localhost:8081/unapproved-motels",
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -145,9 +150,7 @@ export default {
     },
     closeModal() {
       this.showConfirm = false;
-    },
-    editmotel(id) {
-      this.$router.push(`/account/edit-motel/${id}`);
+      this.motelToDelete = null;
     },
     async approveSelected() {
       const formData = new FormData();
@@ -167,13 +170,17 @@ export default {
         }
       }
     },
+    editmotel(id) {
+      this.$router.push(`/account/edit-motel/${id}`);
+    },
   },
 };
 </script>
-    
-    <style scoped>
+      
+<style scoped>
 .card {
   border: 1px solid #ddd;
+  position: relative; /* Để định vị checkbox bên trong card */
 }
 .card-title {
   font-size: 1.25rem;
@@ -183,8 +190,21 @@ export default {
   font-size: 1rem;
   color: #333;
 }
+.position-absolute {
+  position: absolute !important;
+}
+.top-0 {
+  top: 0 !important;
+}
+.end-0 {
+  right: 0 !important;
+}
+.m-2 {
+  margin: 0.5rem !important;
+}
 button {
   cursor: pointer;
 }
 </style>
-    
+
+      

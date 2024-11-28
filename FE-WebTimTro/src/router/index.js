@@ -10,6 +10,7 @@ import editMotel from '@/pages/accountPage/editMotel.vue';
 import ManageMotel from '@/pages/accountPage/manageMotel.vue';
 import ChangePassword from '@/pages/accountPage/changePassword.vue';
 import ApprovePostMotel from '@/pages/adminPage/approvePostMotel.vue';
+import UnApprovePostMotel from '@/pages/adminPage/unApprovePostMotel.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,7 +24,8 @@ const router = createRouter({
     { path: "/account/quan-ly-tro", name: "ManageMotel", component: ManageMotel },
     { path: "/account/doi-mat-khau", name: "ChangePassword", component: ChangePassword },
     { path: "/account/edit-motel/:id", name: "EditPage", component: editMotel },
-    { path: "/admin/duyet-bai-dang", name: "ApprovePage", component: ApprovePostMotel },
+    { path: "/admin/duyet-bai-dang", name: "ApprovePage", component: UnApprovePostMotel },
+    { path: "/admin/bai-dang-da-duyet", name: "UnApprovePage", component: ApprovePostMotel },
     {
       path: '/motel/:slug-:id',
       name: 'motelDetail',

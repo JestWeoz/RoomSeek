@@ -111,7 +111,9 @@ public class MotelServiceImpl implements MotelService {
 
     @Override
     public MotelResponse getById(Integer Id) {
-        return motelResponseConverter.toMotelResponse(motelRepository.findById(Id).get());
+        MotelResponse motelResponse = motelResponseConverter.toMotelResponse(motelRepository.findById(Id).get());
+
+        return motelResponse;
     }
 
     @Override
@@ -123,8 +125,6 @@ public class MotelServiceImpl implements MotelService {
                 List<Integer> ListIdDelete = motelDTO.getListIdDelete();
                 for (Integer IdDelete : ListIdDelete) {
                     FileEntity fileEntity = fileService.findById(IdDelete);
-                    fileEntity.setMotelEntity(null);
-                    motelEntity.getFileEntities().remove(fileEntity);
                     fileService.delete(IdDelete);
                 }
             }
@@ -158,5 +158,20 @@ public class MotelServiceImpl implements MotelService {
         }
 
         return result;
+    }
+
+    @Override
+    public List<MotelResponse> getMotelsByStatus(Integer status) throws MalformedURLException {
+        return motelResponseConverter.toMotelResponse(motelRepository.findMotelByStatus(status));
+    }
+
+    @Override
+    public void setStatus(List<Integer> Id, Integer status) throws MalformedURLException {
+        for (Integer Ids : Id) {
+            MotelEntity motelEntity = motelRepository.findById(Ids).get();
+            motelEntity.setStatus(status);
+            motelRepository.save(motelEntity);
+        }
+
     }
 }

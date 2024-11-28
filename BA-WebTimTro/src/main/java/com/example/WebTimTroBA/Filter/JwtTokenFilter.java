@@ -28,7 +28,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     public static final Set<String> WHITE_LIST = new HashSet<>();
 
     static {
-        WHITE_LIST.add("/static/**");
+        WHITE_LIST.add("/unapproved-motels");
         WHITE_LIST.add("/login");
         WHITE_LIST.add("/register");
         WHITE_LIST.add("/search/**");
@@ -36,6 +36,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         WHITE_LIST.add("/dashboard");
         WHITE_LIST.add("/motel/{id}");
         WHITE_LIST.add("/delete/**");
+        WHITE_LIST.add("/get-info");
+        WHITE_LIST.add("/changePassword");
+        WHITE_LIST.add("/approved-motels");
     }
 
     @Override

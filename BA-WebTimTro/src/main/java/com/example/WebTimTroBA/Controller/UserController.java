@@ -135,5 +135,14 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @GetMapping("/unapproved-motels")
+    public ResponseEntity<?> getUnapprovedMotels() throws MalformedURLException {
+        return ResponseEntity.ok().body(motelService.getMotelsByStatus(0));
+    }
+    @GetMapping("/approved-motels")
+    public ResponseEntity<?> getApprovedMotels() throws MalformedURLException {
+        return ResponseEntity.ok().body(motelService.getMotelsByStatus(1));
+    }
+
 
 }
