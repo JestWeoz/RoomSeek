@@ -2,7 +2,7 @@
   <div class="hpc-navbar">
     <div class="container">
       <div class="row">
-        <navbarInforAccount />
+        <Navbar />
       </div>
     </div>
   </div>
@@ -27,9 +27,19 @@
           >
             Quản lý trọ đã đăng
           </li>
-          <li class="list-group-item" style="cursor: pointer">Đăng Tin</li>
-          <li class="list-group-item" style="cursor: pointer">
-            Quản lý đánh giá trợ
+          <li
+            class="list-group-item"
+            style="cursor: pointer"
+            @click="toPostPage"
+          >
+            Đăng Tin
+          </li>
+          <li
+            class="list-group-item"
+            style="cursor: pointer"
+            @click="toChangePasswordPage"
+          >
+            Đổi Mật Khẩu
           </li>
         </ul>
       </div>
@@ -46,13 +56,21 @@
 <script>
 import formEditMotel from "@/components/PageComponents/editPageComponents/formEditMotel.vue";
 import navbarInforAccount from "@/components/PageComponents/accountPageComponents/navbarInforAccount.vue";
+import Navbar from "@/components/PageComponents/homePageComponents/navbar.vue";
 export default {
   name: "EditPage",
   components: {
     navbarInforAccount,
+    Navbar,
     formEditMotel,
   },
   methods: {
+    toPostPage() {
+      this.$router.push("/account/dang-tin");
+    },
+    toChangePasswordPage() {
+      this.$router.push("/account/doi-mat-khau");
+    },
     toManageMotelPage() {
       this.$router.push("/account/quan-ly-tro");
     },

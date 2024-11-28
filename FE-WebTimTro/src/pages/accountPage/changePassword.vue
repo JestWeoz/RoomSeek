@@ -2,7 +2,7 @@
   <div class="hpc-navbar">
     <div class="container">
       <div class="row">
-        <navbarInforAccount></navbarInforAccount>
+        <Navbar></Navbar>
       </div>
     </div>
   </div>
@@ -97,7 +97,7 @@
           <button type="button" class="btn-close" @click="closeModal"></button>
         </div>
         <div class="modal-body">
-          <p>Cập nhật thông tin thành công!</p>
+          <p>Cập nhật mật khẩu thành công</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" @click="closeModal">
@@ -138,11 +138,13 @@
 </template>
   <script>
 import navbarInforAccount from "@/components/PageComponents/accountPageComponents/navbarInforAccount.vue";
+import Navbar from "@/components/PageComponents/homePageComponents/navbar.vue";
 import axios from "axios";
 export default {
   name: "ChangePassword",
   components: {
     navbarInforAccount,
+    Navbar,
   },
   data() {
     return {
@@ -184,7 +186,7 @@ export default {
         } catch (error) {
           this.errorMessage =
             error.response?.data?.message ||
-            "Mật khẩu cũ hoặc mật khẩu nhập lại của bạn không đúng hãy kiểm tra lại!!";
+            "Mật khẩu cũ hoặc mật khẩu nhập lại của bạn không đúng";
           this.showErrorModal = true;
         }
       }

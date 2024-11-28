@@ -3,7 +3,7 @@
   <div class="hpc-navbar">
     <div class="container">
       <div class="row">
-        <cls-navbar />
+        <navbar />
         <cls-navbarmobile />
       </div>
     </div>
@@ -11,9 +11,6 @@
 
   <!-- SEARCH NAVBAR -->
   <cls-search-navbar />
-
-  <!-- BREADCRUMB -->
-  <!-- <cls-breadcrumb /> -->
 
   <!-- PAGE CONTENT -->
   <div class="mg-page-content">
@@ -53,6 +50,7 @@ import Pagination from "@/components/PageComponents/torenPageComponents/paginati
 import Props from "@/components/PageComponents/torenPageComponents/props.vue";
 import ResultList from "@/components/PageComponents/torenPageComponents/resultList.vue";
 import SearchNavbar from "@/components/PageComponents/torenPageComponents/searchNavbar.vue";
+import navbar from "@/components/PageComponents/homePageComponents/navbar.vue";
 
 export default {
   name: "torenPage",
@@ -67,6 +65,7 @@ export default {
     clsBannerWidget: BannerWidget,
     clsKindsOfHouse: KindsOfHouse,
     clsCityArea: CityArea,
+    navbar,
   },
   data() {
     return {

@@ -2,7 +2,7 @@
   <div class="hpc-navbar">
     <div class="container">
       <div class="row">
-        <navbarInforAccount />
+        <Navbar />
       </div>
     </div>
   </div>
@@ -52,10 +52,12 @@
 <script>
 import formPost from "@/components/PageComponents/postMotelPageComponents/formPost.vue";
 import navbarInforAccount from "@/components/PageComponents/accountPageComponents/navbarInforAccount.vue";
+import Navbar from "@/components/PageComponents/homePageComponents/navbar.vue";
 export default {
   name: "PostPage",
   components: {
     navbarInforAccount,
+    Navbar,
     formPost,
   },
   methods: {

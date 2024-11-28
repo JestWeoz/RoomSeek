@@ -22,6 +22,7 @@
           <a
             class="nav-link"
             href="https://www.facebook.com/profile.php?id=100017121455155"
+            target="_blank"
             >Liên hệ</a
           >
         </li>
@@ -42,7 +43,7 @@
         </li>
       </ul>
       <!-- Đưa các nút Đăng nhập và Đăng ký hoàn toàn về cuối -->
-      <div class="ml-auto d-flex">
+      <div class="ml-auto d-flex" v-if="userInfo.role === 'USER'">
         <div class="dropdown" v-if="hasToken">
           <button
             class="btn btn-secondary dropdown-toggle"
@@ -60,6 +61,50 @@
             <li>
               <a class="dropdown-item" href="#" @click="toUserPage"
                 >Thông tin</a
+              >
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                data-bs-toggle="modal"
+                data-bs-target="#exampleModal"
+                href="#"
+                >Đăng xuất</a
+              >
+            </li>
+          </ul>
+        </div>
+        <button
+          class="btn btn-outline-primary mr-2"
+          v-else
+          @click="toLoginPage"
+        >
+          Đăng nhập
+        </button>
+      </div>
+      <div class="ml-auto d-flex" v-else>
+        <div class="dropdown" v-if="hasToken">
+          <button
+            class="btn btn-danger dropdown-toggle"
+            type="button"
+            id="dropdownMenuButton1"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Hi {{ userInfo.userName }}
+          </button>
+          <ul
+            class="dropdown-menu dropdown-menu-end"
+            aria-labelledby="dropdownMenuButton1"
+          >
+            <li>
+              <a class="dropdown-item" href="#" @click="toUserPage"
+                >Thông tin</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" @click="toApprovePage"
+                >Quản Lý Bài Đăng</a
               >
             </li>
             <li>
@@ -139,8 +184,10 @@ export default {
     this.getUserInfo();
   },
   methods: {
+    toApprovePage() {
+      this.$router.push("/admin/duyet-bai-dang");
+    },
     toHomePage() {
-      window.location.reload();
       this.$router.push("/");
     },
     toLoginPage() {
@@ -166,6 +213,7 @@ export default {
             },
           });
           this.userInfo = response.data;
+          console.log(this.userInfo);
         } catch (error) {
           console.error("Error fetching user info:", error);
         }

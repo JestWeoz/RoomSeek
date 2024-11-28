@@ -2,7 +2,7 @@
   <div class="hpc-navbar">
     <div class="container">
       <div class="row">
-        <navbarInforAccount></navbarInforAccount>
+        <Navbar></Navbar>
       </div>
     </div>
   </div>
@@ -108,11 +108,13 @@
 </template>
 <script>
 import navbarInforAccount from "@/components/PageComponents/accountPageComponents/navbarInforAccount.vue";
+import Navbar from "@/components/PageComponents/homePageComponents/navbar.vue";
 import axios from "axios";
 export default {
   name: "InforAccount",
   components: {
     navbarInforAccount,
+    Navbar,
   },
   created() {
     this.getUserInfo();

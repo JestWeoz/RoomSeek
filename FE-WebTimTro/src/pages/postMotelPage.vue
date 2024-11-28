@@ -4,7 +4,7 @@
     <div class="hpc-navbar">
       <div class="container">
         <div class="row">
-          <cls-navbar />
+          <navbar />
           <cls-navbarmobile />
         </div>
       </div>
@@ -29,17 +29,17 @@
 
 <script>
 import Footer from "@/components/PageComponents/homePageComponents/footer.vue";
+import navbar from "@/components/PageComponents/homePageComponents/navbar.vue";
 import NavbarMobile from "@/components/PageComponents/homePageComponents/navbarMobile.vue";
-import NavbarPostPage from "@/components/PageComponents/postMotelPageComponents/navbarPostPage.vue";
 import formPost from "@/components/PageComponents/postMotelPageComponents/formPost.vue";
 
 export default {
   name: "postMotelPage",
   components: {
-    "cls-navbar": NavbarPostPage,
     "cls-navbarmobile": NavbarMobile,
     "cls-footer": Footer,
     "form-post": formPost,
+    navbar,
   },
 };
 </script>

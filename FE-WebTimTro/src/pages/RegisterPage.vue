@@ -134,7 +134,7 @@
                   >
                 </div>
                 <div class="text-center">
-                  <a class="small" @click="toLoginPage"
+                  <a class="small" style="cursor: pointer" @click="toLoginPage"
                     >Đã Có Tài Khoản, Đăng Nhập Ngay!</a
                   >
                 </div>

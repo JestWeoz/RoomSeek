@@ -2,7 +2,7 @@
   <div class="hpc-navbar">
     <div class="container">
       <div class="row">
-        <NavbarAcrticle />
+        <navbar />
         <NavbarMobileArticle />
       </div>
     </div>
@@ -14,17 +14,17 @@
 
 <script>
 import MainDetails from "@/components/PageComponents/detailsMotelPageComponents/mainDetails.vue";
-import NavbarAcrticle from "@/components/PageComponents/detailsMotelPageComponents/navbarAcrticle.vue";
 import NavbarMobileArticle from "@/components/PageComponents/detailsMotelPageComponents/navbarMobileArticle.vue";
 import Footer from "@/components/PageComponents/homePageComponents/footer.vue";
+import navbar from "@/components/PageComponents/homePageComponents/navbar.vue";
 
 export default {
   name: "MotelDetail",
   components: {
-    NavbarAcrticle,
     NavbarMobileArticle,
     MainDetails,
     Footer,
+    navbar,
   },
   data() {
     return {};

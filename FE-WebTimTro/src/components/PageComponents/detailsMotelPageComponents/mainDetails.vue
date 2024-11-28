@@ -107,10 +107,11 @@
                   <li><strong>Mã BĐS:</strong> {{ motel.id }}</li>
                 </ul>
                 <ul class="col-6 list-unstyled">
-                  <li><strong>Phòng ngủ:</strong> 1</li>
-                  <li><strong>Nhà tắm:</strong> 1</li>
-                  <li><strong>Pháp lý:</strong> Không xác định</li>
-                  <li><strong>Hướng:</strong> Không xác định</li>
+                  <li>
+                    <strong>Số Người Tối Đa:</strong> {{ motel.maxPeople }}
+                  </li>
+                  <li><strong>Nội Thất:</strong> {{ motel.interior }}</li>
+                  <li><strong>Dạng nhà trọ:</strong> {{ motel.type }}</li>
                 </ul>
               </div>
             </div>
@@ -138,10 +139,11 @@
                 Số Điện Thoại {{ motel.owner?.phone }}
               </p>
               <a
-                href="tel:0964341***"
+                :href="`https://zalo.me/${motel.owner?.phone}`"
+                target="_blank"
                 class="btn btn-primary btn-sm d-block my-2"
               >
-                Gọi ngay
+                Liên Hệ Qua Zalo
               </a>
             </div>
           </div>

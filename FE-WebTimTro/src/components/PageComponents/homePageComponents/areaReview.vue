@@ -10,10 +10,10 @@
         <div class="ward-review-item">
           <img :src="item.image" :alt="item.alt" />
           <div class="caption">
-            Khám phá 154 khu vực ở
+            Khám phá các nhà trọ ở
             <span>{{ item.name }}</span>
           </div>
-          <a href="#" class="link-overlay">
+          <a class="link-overlay" @click="toTorenPage(item.name)">
             <span>Xem ngay</span>
           </a>
         </div>
@@ -42,6 +42,12 @@ export default {
     };
   },
   methods: {
+    toTorenPage(district) {
+      this.$router.push({
+        path: "/search",
+        query: { district: "Quận " + district, province: "Thành phố Hà Nội" },
+      });
+    },
     initSlick() {
       $("#area-review").slick({
         slidesToShow: 3,

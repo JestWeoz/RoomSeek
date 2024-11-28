@@ -2,7 +2,7 @@
   <div class="hpc-navbar">
     <div class="container">
       <div class="row">
-        <Navbar></Navbar>
+        <navbar />
       </div>
     </div>
   </div>
@@ -12,27 +12,9 @@
     <div class="col-md-2">
       <div class="widget" style="background-color: #ecececc4">
         <ul class="list-group">
-          <li
-            class="list-group-item"
-            @click="toInforAccount"
-            style="cursor: pointer"
-          >
-            Thông tin Tài Khoản
-          </li>
-          <li class="list-group-item active">Quản lý trọ đã đăng</li>
-          <li
-            class="list-group-item"
-            @click="toPostPage"
-            style="cursor: pointer"
-          >
-            Đăng Tin
-          </li>
-          <li
-            class="list-group-item"
-            style="cursor: pointer"
-            @click="toChangePasswordPage"
-          >
-            Đổi Mật Khẩu
+          <li class="list-group-item active">Trọ đã duyệt</li>
+          <li class="list-group-item" style="cursor: pointer">
+            Trọ đang chờ duyệt
           </li>
         </ul>
       </div>
@@ -40,7 +22,7 @@
     <!-- Main Content -->
     <div class="col-md-8">
       <div class="widget" style="background-color: #ecececc4">
-        <h3 class="mb-4">DANH SÁCH TRỌ ĐÃ ĐĂNG</h3>
+        <h3 class="mb-4">DANH SÁCH TRỌ ĐÃ DUYỆT</h3>
         <div v-for="motel in motels" :key="motel.id" class="card mb-3">
           <div class="card-body">
             <h5 class="card-title">{{ motel.title }}</h5>
@@ -81,13 +63,14 @@
     </div>
   </div>
 </template>
-  
-  <script>
+    
+    <script>
 import axios from "axios";
 import navbarInforAccount from "@/components/PageComponents/accountPageComponents/navbarInforAccount.vue";
+
 import Navbar from "@/components/PageComponents/homePageComponents/navbar.vue";
 export default {
-  name: "ManageMotel",
+  name: "ApprovePage",
   components: {
     navbarInforAccount,
     Navbar,
@@ -102,15 +85,6 @@ export default {
     this.getMotels();
   },
   methods: {
-    toChangePasswordPage() {
-      this.$router.push("/account/doi-mat-khau");
-    },
-    toInforAccount() {
-      this.$router.push("/account/thong-tin-tai-khoan");
-    },
-    toPostPage() {
-      this.$router.push("/account/dang-tin");
-    },
     async getMotels() {
       const token = localStorage.getItem("token");
       if (token) {
@@ -159,8 +133,8 @@ export default {
   },
 };
 </script>
-  
-  <style scoped>
+    
+    <style scoped>
 .card {
   border: 1px solid #ddd;
 }
@@ -176,4 +150,4 @@ button {
   cursor: pointer;
 }
 </style>
-  
+    
