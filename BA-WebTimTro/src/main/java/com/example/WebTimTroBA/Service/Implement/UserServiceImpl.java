@@ -25,6 +25,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,13 +39,6 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtils jwtTokenUtils;
 
-    @Override
-    public List<UserResponse> getAllUsers(Integer page) {
-        Page<UserEntity> users = userRepository.findAll(PageRequest.of(page - 1, 3,
-                Sort.by("created_at").descending().and(Sort.by("updated_at").descending()
-                .and(Sort.by("username").ascending()))));
-        return userResponseConverter.toUserResponse(users.getContent());
-    }
 
     @Override
     public ResponseEntity<?> createUser(UserDTO user) {
@@ -103,10 +97,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id);
     }
 
-    @Override
-    public MotelResponse findMotelById(Integer id) {
-        return null;
-    }
 
     @Override
     public UserResponse getUserDetail(String token) {
@@ -138,5 +128,40 @@ public class UserServiceImpl implements UserService {
         userEntity.setEmail(userDTO.getEmail());
         userEntity.setPhoneNumber(userDTO.getPhoneNumber());
         userRepository.save(userEntity);
+    }
+    @Override
+    public void saveResetToken(String email, String resetToken) throws Exception {
+        Optional<UserEntity> userEntityOptional = userRepository.findByEmail(email);
+        if(!userEntityOptional.isPresent()){
+            throw new Exception("Email không tồn tại");
+        }
+        else{
+            UserEntity userEntity = userEntityOptional.get();
+            userEntity.setResetToken(resetToken);
+            userEntity.setTokenExpiryDate(LocalDateTime.now().plusMinutes(30));
+            userRepository.save(userEntity);
+        }
+
+    }
+
+    @Override
+    public void resetPassword(String token, String newPassword) throws Exception {
+        Optional<UserEntity> userEntityOptional = userRepository.findByResetToken(token);
+        if(!userEntityOptional.isPresent()){
+            throw new UsernameNotFoundException("Không tìm thấy tài khoản");
+        }
+        else{
+            UserEntity userEntity = userEntityOptional.get();
+            LocalDateTime now = LocalDateTime.now();
+            if(now.isBefore(userEntity.getTokenExpiryDate())){
+                userEntity.setPassWord(passwordEncoder.encode(newPassword));
+                userEntity.setTokenExpiryDate(now);
+                userRepository.save(userEntity);
+            }
+            else{
+                throw new Exception("Token đã hết hạn. Vui lòng yêu cầu gửi lại email.");
+            }
+
+        }
     }
 }

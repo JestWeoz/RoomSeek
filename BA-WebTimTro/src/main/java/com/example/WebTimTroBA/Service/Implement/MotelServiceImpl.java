@@ -77,10 +77,9 @@ public class MotelServiceImpl implements MotelService {
 
     @Override
     public List<MotelResponse> findAll() throws MalformedURLException {
-//        List<MotelEntity> motelEntities = motelRepository.findAll(Sort.by("created_at").descending().and(Sort.by("updated_at").descending().and(Sort.by("status").ascending())));
-
-        return motelResponseConverter.toMotelResponse(motelRepository.findAll());
+        return List.of();
     }
+
 
     @Override
     public void markById(Integer Id) {
@@ -89,20 +88,6 @@ public class MotelServiceImpl implements MotelService {
         motelRepository.save(motelEntity);
     }
 
-    @Override
-    public List<MotelResponse> findAndPagination(Integer page) throws MalformedURLException {
-        Page<MotelEntity> motelResponses = motelRepository.findAll(PageRequest.of(page-1, 4, Sort.by("created_at").descending().and(Sort.by("updated_at").descending().and(Sort.by("status").ascending()))));
-        return motelResponseConverter.toMotelResponse(motelResponses.getContent());
-    }
-
-    @Override
-    public List<MotelResponse> findByUserName(String name) throws MalformedURLException {
-        Optional<UserEntity> user = userService.findByUserName(name);
-        if(user.isEmpty()) throw new NotFoundException("User not found");
-        Optional<List<MotelEntity>> motelEntities = motelRepository.findByUserId(user.get().getId());
-        if(motelEntities.isEmpty()) throw new NotFoundException("Empty");
-        return motelResponseConverter.toMotelResponse(motelEntities.get());
-    }
 
     @Override
     public void deleteById(Integer Id) {

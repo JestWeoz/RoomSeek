@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -38,6 +39,12 @@ public class UserEntity extends AbstractEntity implements UserDetails{
 
     @Column(name = "email")
     private String email;
+
+    @Column(name = "resettoken")
+    private String resetToken;
+
+    @Column(name = "tokenexpirydate")
+    private LocalDateTime tokenExpiryDate;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true)
     private List<MotelEntity> motelEntities = new ArrayList<>();

@@ -13,8 +13,6 @@ public interface MotelService {
     void save(MotelDTO motelDTO, String token) throws IOException;
     List<MotelResponse> findAll() throws MalformedURLException;
     void markById(Integer Id);
-    List<MotelResponse> findAndPagination(Integer page) throws MalformedURLException;
-    List<MotelResponse> findByUserName(String name) throws MalformedURLException;
     void deleteById(Integer Id);
     MotelResponse getById(Integer Id);
     void editById(Integer Id, MotelDTO motelDTO) throws IOException;

@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Getter
@@ -44,7 +45,7 @@ public class MotelResponse implements Comparable<MotelResponse>{
 
     private String address;
 
-    private LocalDate createAt;
+    private LocalDateTime createAt;
 
     private Integer maxPeople;
 

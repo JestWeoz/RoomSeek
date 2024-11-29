@@ -39,7 +39,9 @@ public class WebSecurityConfig {
                                     "/get-info",
                                     "/changePassword",
                                     "/unapproved-motels",
-                                    "/approved-motels"
+                                    "/approved-motels",
+                                    "/forgot-password/{email}",
+                                    "/reset-password"
 
                             ).permitAll()
                             .requestMatchers(GET, "/admin/**").hasRole("ADMIN")

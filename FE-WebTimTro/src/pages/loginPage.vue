@@ -113,7 +113,10 @@
                       </form>
                       <hr />
                       <div class="text-center">
-                        <a class="small" href="forgot-password.html"
+                        <a
+                          class="small"
+                          @click="toForgotPasswordPage"
+                          style="cursor: pointer"
                           >Quên Mật Khẩu?</a
                         >
                       </div>
@@ -170,6 +173,9 @@ export default {
           this.errorMessage = error.response.data;
           this.showModal = true;
         });
+    },
+    toForgotPasswordPage() {
+      this.$router.push("/forgot-password");
     },
     closeModal() {
       this.showModal = false;

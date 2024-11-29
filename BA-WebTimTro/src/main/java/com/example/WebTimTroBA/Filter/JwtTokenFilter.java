@@ -39,6 +39,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         WHITE_LIST.add("/get-info");
         WHITE_LIST.add("/changePassword");
         WHITE_LIST.add("/approved-motels");
+        WHITE_LIST.add("/reset-password");
+        WHITE_LIST.add("/forgot-password/{email}");
+
     }
 
     @Override

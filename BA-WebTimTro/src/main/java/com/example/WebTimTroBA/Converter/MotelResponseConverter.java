@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.MalformedURLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +41,7 @@ public class MotelResponseConverter {
                 filesDTO.add(fileDTO);
             }
             motelResponse.setFilesDTO(filesDTO);
-            motelResponse.setCreateAt(motelEntity.getCreatedAt().toLocalDate());
+            motelResponse.setCreateAt(motelEntity.getCreatedAt());
             motelResponse.setOwner(ownerResponseConverter.toOwnerResponse(motelEntity.getUser()));
             motelResponse.setAddress("Số " + motelEntity.getHouseNumber() + ", " + motelEntity.getStreet() + ", "
                                         + motelEntity.getWard() + ", " + motelEntity.getDistrict() + ", " + motelEntity.getProvince());
@@ -68,7 +69,7 @@ public class MotelResponseConverter {
                     .build();
             filesDTO.add(fileDTO);
         }
-        motelResponse.setCreateAt(motelEntity.getCreatedAt().toLocalDate());
+        motelResponse.setCreateAt(motelEntity.getCreatedAt());
         motelResponse.setAddress("Số " + motelEntity.getHouseNumber() + ", " + motelEntity.getStreet() + ", "
                 + motelEntity.getWard() + ", " + motelEntity.getDistrict() + ", " + motelEntity.getProvince());
         motelResponse.setFilesDTO(filesDTO);
