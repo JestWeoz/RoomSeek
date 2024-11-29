@@ -78,18 +78,39 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal Thông báo -->
+  <div v-if="showSuccessModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Thông báo</h5>
+          <button
+            type="button"
+            class="close"
+            @click="closeModal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Đăng tin thành công!</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" @click="closeModal">
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
-
-
-
-
-
-      
-      <script>
+<script>
 import axios from "axios";
-
 import Navbar from "@/components/PageComponents/homePageComponents/navbar.vue";
 import { removeVietnameseTones } from "@/utils/removeVnTone";
+
 export default {
   name: "UnApprovePage",
   components: {
@@ -99,6 +120,7 @@ export default {
     return {
       motels: [],
       showConfirm: false,
+      showSuccessModal: false, // Thêm biến trạng thái modal
       selectAll: false,
       selectedMotels: [],
       status: 1,
@@ -144,20 +166,15 @@ export default {
         }
       }
     },
-    showDeleteModal(id) {
-      this.motelToDelete = id;
-      this.showConfirm = true;
-    },
     closeModal() {
-      this.showConfirm = false;
-      this.motelToDelete = null;
+      this.showSuccessModal = false; // Đóng modal
+      window.location.reload();
     },
     async approveSelected() {
       const formData = new FormData();
       formData.append("id", this.selectedMotels);
       formData.append("status", this.status);
       const token = localStorage.getItem("token");
-      console.log(formData);
       if (token) {
         try {
           await axios.post("http://localhost:8081/admin/set-status", formData, {
@@ -165,46 +182,34 @@ export default {
               Authorization: `Bearer ${token}`,
             },
           });
+          this.showSuccessModal = true; // Hiển thị modal sau khi thành công
         } catch (error) {
-          console.error("loi");
+          console.error("Lỗi duyệt bài:", error);
         }
       }
-    },
-    editmotel(id) {
-      this.$router.push(`/account/edit-motel/${id}`);
     },
   },
 };
 </script>
-      
 <style scoped>
-.card {
-  border: 1px solid #ddd;
-  position: relative; /* Để định vị checkbox bên trong card */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.card-title {
-  font-size: 1.25rem;
-  color: #0056b3;
-}
-.card-text {
-  font-size: 1rem;
-  color: #333;
-}
-.position-absolute {
-  position: absolute !important;
-}
-.top-0 {
-  top: 0 !important;
-}
-.end-0 {
-  right: 0 !important;
-}
-.m-2 {
-  margin: 0.5rem !important;
+.modal-dialog {
+  background: #fff;
+  border-radius: 5px;
+  max-width: 500px;
+  width: 100%;
 }
 button {
   cursor: pointer;
 }
 </style>
-
-      

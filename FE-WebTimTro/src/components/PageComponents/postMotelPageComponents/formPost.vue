@@ -353,7 +353,7 @@ export default {
         alert(error.response?.data?.message || "Đã xảy ra lỗi khi tạo mới!");
       } finally {
         this.loading = false; // Ẩn vòng xoay
-        setTimeout(() => (this.success = false), 3000); // Ẩn dấu tích sau 3s
+        setTimeout(() => (this.success = false), 5000); // Ẩn dấu tích sau 3s
       }
     },
     validateForm() {
